@@ -1,0 +1,36 @@
+{
+  "name": "xtens-pg",
+  "version": "1.0.0",
+  "description": "PostgreSQL module for XTENS 2 Contains all the methods accessing the PostgreSQL database",
+  "main": "index.js",
+  "scripts": {
+    "test": "PORT=9999 NODE_ENV=test mocha -R spec --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biolab-unige/xtens-pg.git"
+  },
+  "keywords": [
+    "xtens2",
+    "postgres",
+    "jsonb"
+  ],
+  "author": "Massimiliano Izzo",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/biolab-unige/xtens-pg/issues"
+  },
+  "homepage": "https://github.com/biolab-unige/xtens-pg#readme",
+  "dependencies": {
+    "bluebird": "^2.10.2",
+    "knex": "^0.9.0",
+    "lodash": "^3.10.1",
+    "pg": "^4.4.3",
+    "xtens-fs": "git+https://git@github.com/biolab-unige/xtens-fs.git"
+  },
+  "devDependencies": {
+    "chai": "^3.4.0",
+    "mocha": "^2.3.3",
+    "sinon": "^1.17.1"
+  }
+}
