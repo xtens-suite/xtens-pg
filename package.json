@@ -26,7 +26,8 @@
     "knex": "^0.9.0",
     "lodash": "^3.10.1",
     "pg": "^4.4.3",
-    "xtens-fs": "git+https://git@github.com/biolab-unige/xtens-fs.git"
+    "xtens-fs": "git+https://git@github.com/biolab-unige/xtens-fs.git",
+    "xtens-utils": "git+https://git@github.com/biolab-unige/xtens-utils.git"
   },
   "devDependencies": {
     "chai": "^3.4.0",
