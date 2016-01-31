@@ -731,16 +731,16 @@ describe("PgJSONBQueryStrategy", function() {
             expect(res.previousOutput.parameters).to.eql([loopListCriteriaObj.content[0].fieldName, loopListCriteriaObj.content[0].fieldValue]);
         });
 
-        /*TODO LIKE/ILIKE search on loops (use json_array_elements?)
-        it("should return a clause with the element exists any [?|] jsonb operator", function() {
+        /* TODO LIKE/ILIKE search on loops (use json_array_elements?) */
+        it("should return a clause with a pattern matching search", function() {
             let i = 1;
             let previousOutput = {lastPosition: i, parameters: []};
             let res = this.strategy.getSubqueryRowLoop(loopPatternMatchingCriteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("(d.metadata->$"+(++i)+"->'values' ?| $"+(++i)+")");
+            expect(res.subquery).to.equal("EXISTS (SELECT 1 FROM jsonb_array_elements_text(d.metadata->$"+(++i)+"->'values') WHERE value ILIKE $"+(++i)+")");
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql([loopPatternMatchingCriteriaObj.content[0].fieldName,
                 loopPatternMatchingCriteriaObj.content[0].fieldValue]);
-        }); */
+        });
 
     });
 
