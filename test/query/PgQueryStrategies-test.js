@@ -1,6 +1,6 @@
 /**
  * @author Massimiliano Izzo
- * @description unit test 
+ * @description unit test
  */
 /* jshint node: true */
 /* jshint esnext: true */
@@ -231,12 +231,12 @@ describe("PgJSONQueryStrategy", function() {
                 "((d.metadata->$4->>'value')::text IN ($5,$6,$7)) AND " +
                 "((d.metadata->$8->>'value')::float >= $9 AND " + "(d.metadata->$8->>'unit')::text LIKE $10) AND " +
                 "((d.metadata->$11->>'value')::integer > $12 AND " + "(d.metadata->$11->>'unit')::text LIKE $13))";
-            let parameters = [ criteriaObj.dataType, 
+            let parameters = [ criteriaObj.dataType,
                 criteriaObj.content[0].fieldName, criteriaObj.content[0].fieldValue,
-                criteriaObj.content[1].fieldName, criteriaObj.content[1].fieldValue[0], 
-                criteriaObj.content[1].fieldValue[1], criteriaObj.content[1].fieldValue[2], 
+                criteriaObj.content[1].fieldName, criteriaObj.content[1].fieldValue[0],
+                criteriaObj.content[1].fieldValue[1], criteriaObj.content[1].fieldValue[2],
                 criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, criteriaObj.content[2].fieldUnit,
-                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, criteriaObj.content[3].fieldUnit 
+                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, criteriaObj.content[3].fieldUnit
             ];
             expect(parameteredQuery).to.have.property('select');
             expect(parameteredQuery).to.have.property('where');
@@ -250,7 +250,7 @@ describe("PgJSONQueryStrategy", function() {
         it("composes a query from a criteria object containing specialized fields on subject and personal details", function() {
             let commonTableExpr = [
                 "SELECT id, given_name, surname, birth_date FROM personal_details pd WHERE pd.surname NOT LIKE "
-            ]; 
+            ];
         });
 
         it("composes a set of queries from a nested criteria object", function() {
@@ -270,25 +270,25 @@ describe("PgJSONQueryStrategy", function() {
                 "SELECT id, biobank_code, parent_subject, parent_sample FROM sample WHERE type = $7 AND (((metadata->$8->>'value')::text IN ($9)))"
             ];
 
-            let selectStatement = "SELECT id, code, sex FROM subject d"; 
-            let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->>'value')::integer <= $3 "; 
+            let selectStatement = "SELECT id, code, sex FROM subject d";
+            let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->>'value')::integer <= $3 ";
             whereClause += "AND (d.metadata->$2->>'unit')::text LIKE $4) AND ((d.metadata->$5->>'value')::text IN ($6)))";
             let parameters = [ nestedParamsObj.dataType,
                 nestedParamsObj.content[0].fieldName, nestedParamsObj.content[0].fieldValue, nestedParamsObj.content[0].fieldUnit, // Subject
                 nestedParamsObj.content[1].fieldName, nestedParamsObj.content[1].fieldValue[0],
                 nestedParamsObj.content[2].dataType, nestedParamsObj.content[2].content[0].fieldName, //Tissue
-                nestedParamsObj.content[2].content[0].fieldValue[0], 
+                nestedParamsObj.content[2].content[0].fieldValue[0],
                 nestedParamsObj.content[2].content[1].dataType, nestedParamsObj.content[2].content[1].content[0].fieldName, // DNA Sample
                 nestedParamsObj.content[2].content[1].content[0].fieldValue, nestedParamsObj.content[2].content[1].content[0].fieldUnit,
                 nestedParamsObj.content[2].content[1].content[1].dataType, // CGH
                 nestedParamsObj.content[2].content[1].content[1].content[0].fieldName,
-                nestedParamsObj.content[2].content[1].content[1].content[0].fieldValue[0], 
+                nestedParamsObj.content[2].content[1].content[1].content[0].fieldValue[0],
                 nestedParamsObj.content[2].content[1].content[1].content[0].fieldValue[1],
                 nestedParamsObj.content[2].content[2].dataType, nestedParamsObj.content[2].content[2].content[0].fieldName, // RNA Sample
                 nestedParamsObj.content[2].content[2].content[0].fieldValue, nestedParamsObj.content[2].content[2].content[0].fieldUnit,
                 nestedParamsObj.content[2].content[2].content[1].dataType, // Microarray
                 nestedParamsObj.content[2].content[2].content[1].content[0].fieldName,
-                nestedParamsObj.content[2].content[2].content[1].content[0].fieldValue[0] 
+                nestedParamsObj.content[2].content[2].content[1].content[0].fieldValue[0]
             ];
             console.log(parameters);
             console.log(parameters.length);
@@ -429,6 +429,42 @@ describe("PgJSONBQueryStrategy", function() {
         ]
     };
 
+    let comparisonCriteriaObj = {
+        "dataType": 8,
+        "model": "Data",
+        "content": [{
+            "comparator": "LIKE",
+            "fieldName": "name",
+            "fieldType": "text",
+            "fieldValue": "Aldebaran",
+            "isList": false
+        },{
+            "comparator": "ILIKE",
+            "fieldName": "constellation",
+            "fieldType": "text",
+            "fieldValue": "Orio%",
+            "isList": false
+        }]
+    };
+
+    let negativeComparisonCriteriaObj = {
+        "dataType": 8,
+        "model": "Data",
+        "content": [{
+            "comparator": "NOT LIKE",
+            "fieldName": "name",
+            "fieldType": "text",
+            "fieldValue": "Ald%",
+            "isList": false
+        },{
+            "comparator": "NOT ILIKE",
+            "fieldName": "constellation",
+            "fieldType": "text",
+            "fieldValue": "%rIO%",
+            "isList": false
+        }]
+    };
+
     let caseInsensitiveCriteriaObj = {
         "dataType": 1,
         "model": "Data",
@@ -514,6 +550,19 @@ describe("PgJSONBQueryStrategy", function() {
         ]
     };
 
+    let loopPatternMatchingCriteriaObj = {
+        "dataType": 7,
+        "content": [
+            {
+            "comparator": "ILIKE",
+            "fieldName": "gene_name",
+            "fieldType": "text",
+            "fieldValue": "CORF%",
+            "isInLoop": true
+        }
+        ]
+    };
+
     let loopListCriteriaObj = {
         "dataType": 7,
         "content": [
@@ -537,10 +586,7 @@ describe("PgJSONBQueryStrategy", function() {
             {"specializedQuery": "Sample"},
             {}
         ]
-    }; 
-
-
-
+    };
 
     before(function() {
         this.strategy = new PgJSONBQueryStrategy();
@@ -685,7 +731,16 @@ describe("PgJSONBQueryStrategy", function() {
             expect(res.previousOutput.parameters).to.eql([loopListCriteriaObj.content[0].fieldName, loopListCriteriaObj.content[0].fieldValue]);
         });
 
-
+        /*TODO LIKE/ILIKE search on loops (use json_array_elements?)
+        it("should return a clause with the element exists any [?|] jsonb operator", function() {
+            let i = 1;
+            let previousOutput = {lastPosition: i, parameters: []};
+            let res = this.strategy.getSubqueryRowLoop(loopPatternMatchingCriteriaObj.content[0], previousOutput, 'd.');
+            expect(res.subquery).to.equal("(d.metadata->$"+(++i)+"->'values' ?| $"+(++i)+")");
+            expect(res.previousOutput).to.have.property("parameters");
+            expect(res.previousOutput.parameters).to.eql([loopPatternMatchingCriteriaObj.content[0].fieldName,
+                loopPatternMatchingCriteriaObj.content[0].fieldValue]);
+        }); */
 
     });
 
@@ -703,6 +758,46 @@ describe("PgJSONBQueryStrategy", function() {
                 '{\"type\":{\"value\":\"supergiant\"}}', '{\"type\":{\"value\":\"main-sequence star\"}}',
                 criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, '{\"mass\":{\"unit\":\"M☉\"}}',
                 criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, '{\"distance\":{\"unit\":\"pc\"}}'
+            ];
+
+            expect(parameteredQuery).to.have.property('select');
+            expect(parameteredQuery).to.have.property('where');
+            expect(parameteredQuery).to.have.property('previousOutput');
+            expect(parameteredQuery.select).to.equal(selectStatement);
+            expect(parameteredQuery.where).to.equal(whereClause);
+            expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
+
+        });
+
+        it("compose a query from criteria with positive string pattern matching (LIKE/Insensitive LIKE)", function() {
+            let parameteredQuery = this.strategy.composeSingle(comparisonCriteriaObj);
+            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let whereClause = "WHERE d.type = $1 AND (" +
+                "((d.metadata->$2->>'value')::text LIKE $3) AND " +
+                "((d.metadata->$4->>'value')::text ILIKE $5))";
+            let parameters = [ comparisonCriteriaObj.dataType,
+                comparisonCriteriaObj.content[0].fieldName, comparisonCriteriaObj.content[0].fieldValue,
+                comparisonCriteriaObj.content[1].fieldName, comparisonCriteriaObj.content[1].fieldValue
+            ];
+
+            expect(parameteredQuery).to.have.property('select');
+            expect(parameteredQuery).to.have.property('where');
+            expect(parameteredQuery).to.have.property('previousOutput');
+            expect(parameteredQuery.select).to.equal(selectStatement);
+            expect(parameteredQuery.where).to.equal(whereClause);
+            expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
+
+        });
+
+        it("compose a query from criteria with negative string pattern matching (NOT LIKE/NOT Insensitive LIKE)", function() {
+            let parameteredQuery = this.strategy.composeSingle(negativeComparisonCriteriaObj);
+            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let whereClause = "WHERE d.type = $1 AND (" +
+                "((d.metadata->$2->>'value')::text NOT LIKE $3) AND " +
+                "((d.metadata->$4->>'value')::text NOT ILIKE $5))";
+            let parameters = [ negativeComparisonCriteriaObj.dataType,
+                negativeComparisonCriteriaObj.content[0].fieldName, negativeComparisonCriteriaObj.content[0].fieldValue,
+                negativeComparisonCriteriaObj.content[1].fieldName, negativeComparisonCriteriaObj.content[1].fieldValue
             ];
 
             expect(parameteredQuery).to.have.property('select');
@@ -791,7 +886,7 @@ describe("PgJSONBQueryStrategy", function() {
 
            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
            let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->'values' " + loopListCriteriaObj.content[0].comparator + " $3)))";
-           let parameters = [loopListCriteriaObj.dataType, loopListCriteriaObj.content[0].fieldName, 
+           let parameters = [loopListCriteriaObj.dataType, loopListCriteriaObj.content[0].fieldName,
            _.map(loopListCriteriaObj.content[0].fieldValue, elem => elem.toUpperCase())];
            loopCriteriaObj.content[0].caseInsensitive = true;
            let parameteredQuery = this.strategy.composeSingle(loopListCriteriaObj);
@@ -841,7 +936,7 @@ describe("PgJSONBQueryStrategy", function() {
             let query = this.strategy.compose(emptySampleObj);
             let expectedStatement = ["WITH bb AS (SELECT id, biobank_id, acronym, name FROM biobank) ",
                 "SELECT DISTINCT d.id, d.biobank, d.biobank_code, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
-                "LEFT JOIN bb ON bb.id = d.biobank ", 
+                "LEFT JOIN bb ON bb.id = d.biobank ",
                 "WHERE d.type = $1;"].join("");
                 expect(query.statement).to.equal(expectedStatement);
                 expect(query.parameters).to.eql([emptySampleObj.dataType]);
