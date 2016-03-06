@@ -1,11 +1,13 @@
 /**
  * @author Massimiliano Izzo
- * @description unit test 
+ * @description unit test
  */
 /* jshint node: true */
 /* jshint esnext: true */
 /* jshint mocha: true */
 "use strict";
+
+/*
 
 let expect = require('chai').expect;
 let sinon = require('sinon');
@@ -13,7 +15,7 @@ let PgKnexCrudStrategy = require('../../lib/crud/PgCrudStrategies.js').PgKnexCru
 let FileSystemManager = require('xtens-fs').FileSystemManager;
 
 
-/* a test connection according to sails format */
+// a test connection according to sails format
 let dbConnection = require('../../config/local.js').connection;
 let fsConnection = require('../../config/local.js').fsConnection;
 
@@ -41,7 +43,7 @@ describe('PgKnexCrudStrategy', function() {
 
     describe('#constructor', function() {
 
-        
+
         it ("should create a new knex object with the proper connection", function() {
             let strategy = new PgKnexCrudStrategy(dbConnection, fsConnection);
             expect(strategy.knex).to.exist;
@@ -55,7 +57,7 @@ describe('PgKnexCrudStrategy', function() {
     describe('#createData', function() {
 
         let strategy = new PgKnexCrudStrategy(dbConnection, fsConnection);
-        
+
         before(function() {
             return strategy.knex('data').truncate()
             .then(function() {
@@ -68,15 +70,16 @@ describe('PgKnexCrudStrategy', function() {
         it("# should create the proper query strategy", function() {
             let mock = sinon.mock(FileSystemManager.prototype);
             let dataTypeName = "testDataType";
-            /* TODO find a way to mock connections to DB and FileSystem
+            // TODO find a way to mock connections to DB and FileSystem
             return strategy.createData(dataObj, dataTypeName).then(function() {
                 console.log("done");
             }).catch(function(err) {
                 console.log("error");
             }) ;
-           */
+
         });
-    
+
     });
 
 });
+*/
