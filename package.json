@@ -28,6 +28,7 @@
     "pg": "^4.4.3",
     "pg-promise": "^5.3.3",
     "pg-query-stream": "^1.0.0",
+    "request": "2.79.0",
     "xtens-fs": "git+https://git@github.com/biolab-unige/xtens-fs.git",
     "xtens-utils": "git+https://git@github.com/biolab-unige/xtens-utils.git"
   },
