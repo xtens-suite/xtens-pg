@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/biolab-unige/xtens-pg.git"
+    "url": "git+https://github.com/xtens-suite/xtens-pg.git"
   },
   "keywords": [
     "xtens2",
@@ -18,9 +18,9 @@
   "author": "Massimiliano Izzo",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/biolab-unige/xtens-pg/issues"
+    "url": "https://github.com/xtens-suite/xtens-pg/issues"
   },
-  "homepage": "https://github.com/biolab-unige/xtens-pg#readme",
+  "homepage": "https://github.com/xtens-suite/xtens-pg#readme",
   "dependencies": {
     "bluebird": "^2.10.2",
     "knex": "^0.9.0",
@@ -29,8 +29,8 @@
     "pg-promise": "^5.3.3",
     "pg-query-stream": "1.0.0",
     "request": "2.79.0",
-    "xtens-fs": "git+https://git@github.com/biolab-unige/xtens-fs.git",
-    "xtens-utils": "git+https://git@github.com/biolab-unige/xtens-utils.git"
+    "xtens-fs": "git+https://git@github.com/xtens-suite/xtens-fs.git",
+    "xtens-utils": "git+https://git@github.com/xtens-suite/xtens-utils.git"
   },
   "devDependencies": {
     "chai": "^3.4.0",
