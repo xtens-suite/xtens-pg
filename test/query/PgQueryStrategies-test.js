@@ -320,7 +320,7 @@ describe("PgJSONQueryStrategy", function() {
                 "WHERE type = $22 AND (((metadata->$23->>'value')::text IN ($24))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.code, d.sex, d.metadata FROM subject d ",
+                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, d.metadata FROM subject d ",
                 "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
                 "INNER JOIN nested_2 ON nested_2.parent_sample = nested_1.id ",
                 "INNER JOIN nested_3 ON nested_3.parent_sample = nested_2.id ",
@@ -344,7 +344,7 @@ describe("PgJSONQueryStrategy", function() {
                 "WHERE type = $10 AND ((biobank_code LIKE $11) AND ((metadata->$12->>'value')::text IN ($13))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.code, d.sex, d.metadata FROM subject d ",
+                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, d.metadata FROM subject d ",
                 "LEFT JOIN pd ON pd.id = d.personal_info ",
                 "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
                 "WHERE d.type = $1 ",
@@ -371,7 +371,7 @@ describe("PgJSONQueryStrategy", function() {
                 "WHERE type = $10 AND ((biobank_code LIKE $11) AND ((metadata->$12->>'value')::text IN ($13))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.code, d.sex, pd.given_name, pd.surname, pd.birth_date, d.metadata FROM subject d ",
+                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, pd.given_name, pd.surname, pd.birth_date, d.metadata FROM subject d ",
                 "LEFT JOIN pd ON pd.id = d.personal_info ",
                 "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
                 "WHERE d.type = $1 AND ((pd.surname LIKE $2 AND pd.given_name NOT LIKE $3) ",
@@ -916,7 +916,7 @@ describe("PgJSONBQueryStrategy", function() {
                 "WHERE type = $11 AND ((metadata @> $12 OR metadata @> $13) AND (metadata @> $14)))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.biobank, d.biobank_code, s.code, s.sex, pd.given_name, pd.surname, pd.birth_date, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
+                "SELECT DISTINCT d.id, d.type, d.owner, d.biobank, d.biobank_code, s.code, s.sex, pd.given_name, pd.surname, pd.birth_date, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
                 "LEFT JOIN s ON s.id = d.parent_subject ",
                 "LEFT JOIN pd ON pd.id = s.personal_info ",
                 "LEFT JOIN bb ON bb.id = d.biobank ",
@@ -935,7 +935,7 @@ describe("PgJSONBQueryStrategy", function() {
         it("composes a query from an empty sample criteria (containing an empty specialized criteria)", function() {
             let query = this.strategy.compose(emptySampleObj);
             let expectedStatement = ["WITH bb AS (SELECT id, biobank_id, acronym, name FROM biobank) ",
-                "SELECT DISTINCT d.id, d.biobank, d.biobank_code, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
+                "SELECT DISTINCT d.id, d.type, d.owner, d.biobank, d.biobank_code, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
                 "LEFT JOIN bb ON bb.id = d.biobank ",
                 "WHERE d.type = $1;"].join("");
                 expect(query.statement).to.equal(expectedStatement);
