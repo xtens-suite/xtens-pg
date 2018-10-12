@@ -225,7 +225,7 @@ describe("PgJSONQueryStrategy", function() {
 
         it("composes a query from a criteria object containing only nonrecursive fields", function() {
             let parameteredQuery = this.strategy.composeSingle(criteriaObj);
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "((d.metadata->$2->>'value')::text = $3) AND " +
                 "((d.metadata->$4->>'value')::text IN ($5,$6,$7)) AND " +
@@ -308,24 +308,30 @@ describe("PgJSONQueryStrategy", function() {
             let query = this.strategy.compose(nestedParamsObj);
 
             let commonTableExpr = [
-                "WITH nested_1 AS (SELECT id, biobank_code, parent_subject, parent_sample FROM sample ",
+                "WITH nested_1 AS (SELECT id, biobank_code FROM sample ",
                 "WHERE type = $7 AND (((metadata->$8->>'value')::text IN ($9)))), ",
-                "nested_2 AS (SELECT id, biobank_code, parent_subject, parent_sample FROM sample WHERE type = $10 ",
+                "nested_2 AS (SELECT id, biobank_code FROM sample WHERE type = $10 ",
                 "AND (((metadata->$11->>'value')::float >= $12 AND (metadata->$11->>'unit')::text LIKE $13))), ",
-                "nested_3 AS (SELECT id, parent_subject, parent_sample, parent_data FROM data ",
+                "nested_3 AS (SELECT id FROM data ",
                 "WHERE type = $14 AND (((metadata->$15->>'value')::text IN ($16,$17)))), ",
-                "nested_4 AS (SELECT id, biobank_code, parent_subject, parent_sample FROM sample WHERE type = $18 ",
+                "nested_4 AS (SELECT id, biobank_code FROM sample WHERE type = $18 ",
                 "AND (((metadata->$19->>'value')::float >= $20 AND (metadata->$19->>'unit')::text LIKE $21))), ",
-                "nested_5 AS (SELECT id, parent_subject, parent_sample, parent_data FROM data ",
+                "nested_5 AS (SELECT id FROM data ",
                 "WHERE type = $22 AND (((metadata->$23->>'value')::text IN ($24))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, d.metadata FROM subject d ",
-                "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
-                "INNER JOIN nested_2 ON nested_2.parent_sample = nested_1.id ",
-                "INNER JOIN nested_3 ON nested_3.parent_sample = nested_2.id ",
-                "INNER JOIN nested_4 ON nested_4.parent_sample = nested_1.id ",
-                "INNER JOIN nested_5 ON nested_5.parent_sample = nested_4.id ",
+                "SELECT DISTINCT d.code, d.sex, d.id, d.type, d.owner, d.metadata FROM subject d ",
+
+                'INNER JOIN sample_donor__subject_childrensample AS smsb_1 ON smsb_1."subject_childrenSample" = d.id ',
+                'INNER JOIN nested_1 ON smsb_1."sample_donor" = nested_1.id ',
+                'INNER JOIN sample_parentsample__sample_childrensample AS smsm_2 ON smsm_2."sample_childrenSample" = nested_1.id ',
+                'INNER JOIN nested_2 ON smsm_2."sample_parentSample" = nested_2.id ',
+                'INNER JOIN data_parentsample__sample_childrendata AS dtsm_3 ON dtsm_3."sample_childrenData" = nested_2.id ',
+                'INNER JOIN nested_3 ON dtsm_3."data_parentSample" = nested_3.id ',
+                'INNER JOIN sample_parentsample__sample_childrensample AS smsm_3 ON smsm_3."sample_childrenSample" = nested_1.id ',
+                'INNER JOIN nested_4 ON smsm_3."sample_parentSample" = nested_4.id ',
+                'INNER JOIN data_parentsample__sample_childrendata AS dtsm_4 ON dtsm_4."sample_childrenData" = nested_4.id ',
+                'INNER JOIN nested_5 ON dtsm_4."data_parentSample" = nested_5.id ',
                 "WHERE d.type = $1 ",
                 "AND (((d.metadata->$2->>'value')::integer <= $3 AND (d.metadata->$2->>'unit')::text LIKE $4) ",
                 "AND ((d.metadata->$5->>'value')::text IN ($6)));"
@@ -340,13 +346,14 @@ describe("PgJSONQueryStrategy", function() {
 
             let commonTableExpr = [
                 "WITH pd AS (SELECT id, given_name, surname, birth_date FROM personal_details), ",
-                "nested_1 AS (SELECT id, biobank_code, parent_subject, parent_sample FROM sample ",
+                "nested_1 AS (SELECT id, biobank_code FROM sample ",
                 "WHERE type = $10 AND ((biobank_code LIKE $11) AND ((metadata->$12->>'value')::text IN ($13))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, d.metadata FROM subject d ",
+                "SELECT DISTINCT d.code, d.sex, d.id, d.type, d.owner, d.metadata FROM subject d ",
                 "LEFT JOIN pd ON pd.id = d.personal_info ",
-                "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
+                'INNER JOIN sample_donor__subject_childrensample AS smsb_2 ON smsb_2."subject_childrenSample" = d.id ',
+                'INNER JOIN nested_1 ON smsb_2."sample_donor" = nested_1.id ',
                 "WHERE d.type = $1 ",
                 "AND ((pd.surname LIKE $2 AND pd.given_name NOT LIKE $3) ",
                 "AND (d.code LIKE $4) AND (d.sex IN ($5,$6)) AND ((d.metadata->$7->>'value')::text IN ($8,$9)));"
@@ -367,13 +374,14 @@ describe("PgJSONQueryStrategy", function() {
             let query = this.strategy.compose(_.assign({wantsPersonalInfo: true}, _.cloneDeep(subjectParamsObj)));
             let commonTableExpr = [
                 "WITH pd AS (SELECT id, given_name, surname, birth_date FROM personal_details), ",
-                "nested_1 AS (SELECT id, biobank_code, parent_subject, parent_sample FROM sample ",
+                "nested_1 AS (SELECT id, biobank_code FROM sample ",
                 "WHERE type = $10 AND ((biobank_code LIKE $11) AND ((metadata->$12->>'value')::text IN ($13))))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.type, d.owner, d.code, d.sex, pd.given_name, pd.surname, pd.birth_date, d.metadata FROM subject d ",
+                "SELECT DISTINCT d.code, d.sex, pd.given_name, pd.surname, pd.birth_date, d.id, d.type, d.owner, d.metadata FROM subject d ",
                 "LEFT JOIN pd ON pd.id = d.personal_info ",
-                "INNER JOIN nested_1 ON nested_1.parent_subject = d.id ",
+                'INNER JOIN sample_donor__subject_childrensample AS smsb_2 ON smsb_2."subject_childrenSample" = d.id ',
+                'INNER JOIN nested_1 ON smsb_2."sample_donor" = nested_1.id ',
                 "WHERE d.type = $1 AND ((pd.surname LIKE $2 AND pd.given_name NOT LIKE $3) ",
                 "AND (d.code LIKE $4) AND (d.sex IN ($5,$6)) AND ((d.metadata->$7->>'value')::text IN ($8,$9)));"
             ].join("");
@@ -748,7 +756,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query from criteria with positive matching and range conditions on nonrecursive fields", function() {
             let parameteredQuery = this.strategy.composeSingle(criteriaObj);
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "(d.metadata @> $2) AND (d.metadata @> $3 OR d.metadata @> $4 OR d.metadata @> $5) AND " +
                 "((d.metadata->$6->>'value')::float >= $7 AND " + "d.metadata @> $8) AND " +
@@ -771,7 +779,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query from criteria with positive string pattern matching (LIKE/Insensitive LIKE)", function() {
             let parameteredQuery = this.strategy.composeSingle(comparisonCriteriaObj);
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "((d.metadata->$2->>'value')::text LIKE $3) AND " +
                 "((d.metadata->$4->>'value')::text ILIKE $5))";
@@ -791,7 +799,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query from criteria with negative string pattern matching (NOT LIKE/NOT Insensitive LIKE)", function() {
             let parameteredQuery = this.strategy.composeSingle(negativeComparisonCriteriaObj);
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "((d.metadata->$2->>'value')::text NOT LIKE $3) AND " +
                 "((d.metadata->$4->>'value')::text NOT ILIKE $5))";
@@ -813,7 +821,7 @@ describe("PgJSONBQueryStrategy", function() {
 
             criteriaObj.content[0].comparator = "<>";
             criteriaObj.content[1].comparator = "NOT IN";
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "(NOT d.metadata @> $2) AND (NOT d.metadata @> $3 OR NOT d.metadata @> $4 OR NOT d.metadata @> $5) AND " +
                 "((d.metadata->$6->>'value')::float >= $7 AND " + "d.metadata @> $8) AND " +
@@ -836,7 +844,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query with two boolean fields (from string)", function() {
 
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND ((d.metadata @> $2) AND (d.metadata @> $3))";
             let parameters = [booleanStringCriteriaObj.dataType,
                 '{\"is_neutron_star\":{\"value\":true}}', '{\"is_black_hole\":{\"value\":false}}'];
@@ -852,7 +860,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query with two boolean fields (from boolean)", function() {
 
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND ((d.metadata @> $2) AND (d.metadata @> $3))";
             let parameters = [booleanCriteriaObj.dataType,
                 '{\"is_neutron_star\":{\"value\":true}}', '{\"is_black_hole\":{\"value\":false}}'];
@@ -868,7 +876,7 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("compose a query with a loop array condition", function() {
 
-            let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+            let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->'values' " + loopListCriteriaObj.content[0].comparator + " $3)))";
             let parameters = [loopListCriteriaObj.dataType, loopListCriteriaObj.content[0].fieldName, loopListCriteriaObj.content[0].fieldValue];
             let parameteredQuery = this.strategy.composeSingle(loopListCriteriaObj);
@@ -884,7 +892,7 @@ describe("PgJSONBQueryStrategy", function() {
         /*
            it("compose a query with a loop array condition", function() {
 
-           let selectStatement = "SELECT id, parent_subject, parent_sample, parent_data FROM data d";
+           let selectStatement = "SELECT id FROM data d";
            let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->'values' " + loopListCriteriaObj.content[0].comparator + " $3)))";
            let parameters = [loopListCriteriaObj.dataType, loopListCriteriaObj.content[0].fieldName,
            _.map(loopListCriteriaObj.content[0].fieldValue, elem => elem.toUpperCase())];
@@ -908,21 +916,23 @@ describe("PgJSONBQueryStrategy", function() {
             let commonTableExpr = [
                 "WITH s AS (SELECT id, code, sex, personal_info FROM subject), ",
                 "pd AS (SELECT id, given_name, surname, birth_date FROM personal_details), ",
-                "bb AS (SELECT id, biobank_id, acronym, name FROM biobank), ",
-                "nested_1 AS (SELECT id, parent_subject, parent_sample, parent_data FROM data ",
-                "WHERE type = $6 AND ((metadata @> $7) AND (metadata @> $8))), ",
-                "nested_2 AS (SELECT id, parent_subject, parent_sample, parent_data FROM data WHERE type = $9 AND ((metadata @> $10))), ",
-                "nested_3 AS (SELECT id, parent_subject, parent_sample, parent_data FROM data ",
-                "WHERE type = $11 AND ((metadata @> $12 OR metadata @> $13) AND (metadata @> $14)))"
+                "bb AS (SELECT id, biobank_id, acronym as biobank_acronym, name FROM biobank), ",
+                "nested_1 AS (SELECT id FROM data WHERE type = $6 AND ((metadata @> $7) AND (metadata @> $8))), ",
+                "nested_2 AS (SELECT id FROM data WHERE type = $9 AND ((metadata @> $10))), ",
+                "nested_3 AS (SELECT id FROM data WHERE type = $11 AND ((metadata @> $12 OR metadata @> $13) AND (metadata @> $14)))"
             ].join("");
             let mainQuery = [
-                "SELECT DISTINCT d.id, d.type, d.owner, d.biobank, d.biobank_code, s.code, s.sex, pd.given_name, pd.surname, pd.birth_date, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
-                "LEFT JOIN s ON s.id = d.parent_subject ",
+                "SELECT DISTINCT d.biobank, d.biobank_code, s.code, s.sex, pd.given_name, pd.surname, pd.birth_date, bb.biobank_acronym, d.id, d.type, d.owner, d.metadata FROM sample d ",
+                'LEFT JOIN sample_donor__subject_childrensample AS smsb ON smsb."sample_donor" = d.id ',
+                'LEFT JOIN s ON s.id = smsb."subject_childrenSample" ',
                 "LEFT JOIN pd ON pd.id = s.personal_info ",
                 "LEFT JOIN bb ON bb.id = d.biobank ",
-                "INNER JOIN nested_1 ON nested_1.parent_sample = d.id ",
-                "INNER JOIN nested_2 ON nested_2.parent_data = nested_1.id ",
-                "INNER JOIN nested_3 ON nested_3.parent_data = nested_2.id ",
+                'INNER JOIN data_parentsample__sample_childrendata AS dtsm_1 ON dtsm_1."sample_childrenData" = d.id ',
+                'INNER JOIN nested_1 ON dtsm_1."data_parentSample" = nested_1.id ',
+                'INNER JOIN data_childrendata__data_parentdata AS dtdt_2 ON dtdt_2."data_childrenData" = nested_1.id ',
+                'INNER JOIN nested_2 ON dtdt_2."data_parentData" = nested_2.id ',
+                'INNER JOIN data_childrendata__data_parentdata AS dtdt_3 ON dtdt_3."data_childrenData" = nested_2.id ',
+                'INNER JOIN nested_3 ON dtdt_3."data_parentData" = nested_3.id ',
                 "WHERE d.type = $1 AND ((d.biobank = $2) AND ((d.metadata->$3->>'value')::float >= $4 AND d.metadata @> $5));"
             ].join("");
             expect(query).to.have.property('statement');
@@ -934,8 +944,8 @@ describe("PgJSONBQueryStrategy", function() {
 
         it("composes a query from an empty sample criteria (containing an empty specialized criteria)", function() {
             let query = this.strategy.compose(emptySampleObj);
-            let expectedStatement = ["WITH bb AS (SELECT id, biobank_id, acronym, name FROM biobank) ",
-                "SELECT DISTINCT d.id, d.type, d.owner, d.biobank, d.biobank_code, bb.acronym AS biobank_acronym, d.metadata FROM sample d ",
+            let expectedStatement = ["WITH bb AS (SELECT id, biobank_id, acronym as biobank_acronym, name FROM biobank) ",
+                "SELECT DISTINCT d.biobank, d.biobank_code, bb.biobank_acronym, d.id, d.type, d.owner, d.metadata FROM sample d ",
                 "LEFT JOIN bb ON bb.id = d.biobank ",
                 "WHERE d.type = $1;"].join("");
                 expect(query.statement).to.equal(expectedStatement);
