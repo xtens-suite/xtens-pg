@@ -425,13 +425,13 @@ describe("PgJSONBQueryStrategy", function() {
             "fieldType": "float",
             "comparator": ">=",
             "fieldValue": "1.5",
-            "fieldUnit": "M☉"
+            "fieldUnit": ["M☉"]
         },
         {
             "comparator": ">",
             "fieldName": "distance",
             "fieldType": "integer",
-            "fieldUnit": "pc",
+            "fieldUnit": ["pc"],
             "fieldValue": "50"
         }
         ]
@@ -494,13 +494,13 @@ describe("PgJSONBQueryStrategy", function() {
             "fieldName": "distance",
             "fieldType": "float",
             "fieldValue": "8.25",
-            "fieldUnit": "pc"
+            "fieldUnit": ["pc"]
         }, {
             "comparator": "=",
             "fieldName": "temperature",
             "fieldType": "integer",
             "fieldValue": "7500",
-            "fieldUnit": "K"
+            "fieldUnit": ["K"]
         }
         ]
     };
@@ -585,7 +585,7 @@ describe("PgJSONBQueryStrategy", function() {
         ]
     };
 
-    let sampleParamsObj = {"dataType":4,"model":"Sample","wantsSubject":true,"wantsPersonalInfo":true,"content":[{"specializedQuery":"Sample","biobank":1, "biobankComparator":"="},{"fieldName":"quantity","fieldType":"float","isList":false,"comparator":">=","fieldValue":"1.0","fieldUnit":"μg"},{"dataType":6,"model":"Data","content":[{"fieldName":"platform","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["Agilent"]},{"fieldName":"array","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["4x180K"]},{"dataType":7,"model":"Data","content":[{"fieldName":"genome","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["hg19"]},{"dataType":8,"model":"Data","content":[{"fieldName":"chr","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["chr11","chr17"]},{"fieldName":"is_amplification","fieldType":"boolean","isList":false,"comparator":"=","fieldValue":"true"}]}]}]}]};
+    let sampleParamsObj = {"dataType":4,"model":"Sample","wantsSubject":true,"wantsPersonalInfo":true,"content":[{"specializedQuery":"Sample","biobank":1, "biobankComparator":"="},{"fieldName":"quantity","fieldType":"float","isList":false,"comparator":">=","fieldValue":"1.0","fieldUnit":["μg"]},{"dataType":6,"model":"Data","content":[{"fieldName":"platform","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["Agilent"]},{"fieldName":"array","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["4x180K"]},{"dataType":7,"model":"Data","content":[{"fieldName":"genome","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["hg19"]},{"dataType":8,"model":"Data","content":[{"fieldName":"chr","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["chr11","chr17"]},{"fieldName":"is_amplification","fieldType":"boolean","isList":false,"comparator":"=","fieldValue":"true"}]}]}]}]};
 
     let emptySampleObj = {
         "dataType": 2,
