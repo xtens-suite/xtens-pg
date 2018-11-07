@@ -637,18 +637,18 @@ describe("PgJSONBQueryStrategy", function() {
             let i = 1;
             let previousOutput = {lastPosition: i, parameters: []};
             let res = this.strategy.getSubqueryRowAttribute(numericCriteriaObj.content[1], previousOutput, 'd.');
-            expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND d.metadata @> $" + (++i));
+            expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND (d.metadata->'temperature'->>'unit')::text IN ($" + (++i) + ')');
             expect(res.previousOutput).to.have.property("parameters");
-            expect(res.previousOutput.parameters).to.eql(['{\"temperature\":{\"value\":7500}}', '{\"temperature\":{\"unit\":\"K\"}}']);
+            expect(res.previousOutput.parameters).to.eql(['{\"temperature\":{\"value\":7500}}', 'K']);
         });
 
         it("should return a containment (@>) clause with floating point metadata value", function() {
             let i = 1;
             let previousOutput = {lastPosition: i, parameters: []};
             let res = this.strategy.getSubqueryRowAttribute(numericCriteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND d.metadata @> $" + (++i));
+            expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND (d.metadata->'distance'->>'unit')::text IN ($" + (++i) + ')');
             expect(res.previousOutput).to.have.property("parameters");
-            expect(res.previousOutput.parameters).to.eql(['{\"distance\":{\"value\":8.25}}', '{\"distance\":{\"unit\":\"pc\"}}']);
+            expect(res.previousOutput.parameters).to.eql(['{\"distance\":{\"value\":8.25}}', 'pc']);
         });
 
     });
@@ -759,13 +759,13 @@ describe("PgJSONBQueryStrategy", function() {
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "(d.metadata @> $2) AND (d.metadata @> $3 OR d.metadata @> $4 OR d.metadata @> $5) AND " +
-                "((d.metadata->$6->>'value')::float >= $7 AND " + "d.metadata @> $8) AND " +
-                "((d.metadata->$9->>'value')::integer > $10 AND " + "d.metadata @> $11))";
+                "((d.metadata->$6->>'value')::float >= $7 AND " + "(d.metadata->\'mass\'->>\'unit\')::text IN ($8)) AND " +
+                "((d.metadata->$9->>'value')::integer > $10 AND " + "(d.metadata->\'distance\'->>\'unit\')::text IN ($11)))";
             let parameters = [ criteriaObj.dataType,
                 '{\"constellation\":{\"value\":\"cepheus\"}}', '{\"type\":{\"value\":\"hypergiant\"}}',
                 '{\"type\":{\"value\":\"supergiant\"}}', '{\"type\":{\"value\":\"main-sequence star\"}}',
-                criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, '{\"mass\":{\"unit\":\"M☉\"}}',
-                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, '{\"distance\":{\"unit\":\"pc\"}}'
+                criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, 'M☉',
+                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, 'pc'
             ];
 
             expect(parameteredQuery).to.have.property('select');
@@ -824,13 +824,13 @@ describe("PgJSONBQueryStrategy", function() {
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
                 "(NOT d.metadata @> $2) AND (NOT d.metadata @> $3 OR NOT d.metadata @> $4 OR NOT d.metadata @> $5) AND " +
-                "((d.metadata->$6->>'value')::float >= $7 AND " + "d.metadata @> $8) AND " +
-                "((d.metadata->$9->>'value')::integer > $10 AND " + "d.metadata @> $11))";
+                "((d.metadata->$6->>'value')::float >= $7 AND " + "(d.metadata->\'mass\'->>\'unit\')::text IN ($8)) AND " +
+                "((d.metadata->$9->>'value')::integer > $10 AND " + "(d.metadata->\'distance\'->>\'unit\')::text IN ($11)))";
             let parameters = [ criteriaObj.dataType,
                 '{\"constellation\":{\"value\":\"cepheus\"}}', '{\"type\":{\"value\":\"hypergiant\"}}',
                 '{\"type\":{\"value\":\"supergiant\"}}', '{\"type\":{\"value\":\"main-sequence star\"}}',
-                criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, '{\"mass\":{\"unit\":\"M☉\"}}',
-                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, '{\"distance\":{\"unit\":\"pc\"}}'
+                criteriaObj.content[2].fieldName, criteriaObj.content[2].fieldValue, 'M☉',
+                criteriaObj.content[3].fieldName, criteriaObj.content[3].fieldValue, 'pc'
             ];
             let parameteredQuery = this.strategy.composeSingle(criteriaObj);
             expect(parameteredQuery).to.have.property('select');
@@ -933,7 +933,7 @@ describe("PgJSONBQueryStrategy", function() {
                 'INNER JOIN nested_2 ON dtdt_2."data_parentData" = nested_2.id ',
                 'INNER JOIN data_childrendata__data_parentdata AS dtdt_3 ON dtdt_3."data_childrenData" = nested_2.id ',
                 'INNER JOIN nested_3 ON dtdt_3."data_parentData" = nested_3.id ',
-                "WHERE d.type = $1 AND ((d.biobank = $2) AND ((d.metadata->$3->>'value')::float >= $4 AND d.metadata @> $5));"
+                "WHERE d.type = $1 AND ((d.biobank = $2) AND ((d.metadata->$3->>'value')::float >= $4 AND (d.metadata->'quantity'->>'unit')::text IN ($5)));"
             ].join("");
             expect(query).to.have.property('statement');
             expect(query).to.have.property('parameters');
