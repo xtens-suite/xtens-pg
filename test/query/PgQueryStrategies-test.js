@@ -14,14 +14,13 @@ let DataTypeClasses = require("../../lib/Utils").DataTypeClasses;
 let PgJSONQueryStrategy = require('../../lib/query/PgQueryStrategies.js').PgJSONQueryStrategy;
 let PgJSONBQueryStrategy = require('../../lib/query/PgQueryStrategies.js').PgJSONBQueryStrategy;
 
-describe("PgJSONQueryStrategy", function() {
-
+describe("PgJSONQueryStrategy", function () {
     let criteriaRowWithSQLInjection = {
-        "fieldName":"Diagnosis",
-        "fieldType":"text",
-        "isList":true,
-        "comparator":">= 0; DROP table data;",
-        "fieldValue":["Neuroblastoma"]
+        "fieldName": "Diagnosis",
+        "fieldType": "text",
+        "isList": true,
+        "comparator": ">= 0; DROP table data;",
+        "fieldValue": ["Neuroblastoma"]
     };
 
     let criteriaObj = {
@@ -29,101 +28,101 @@ describe("PgJSONQueryStrategy", function() {
         "model": "Data",
         "content": [
             {
-            "fieldName": "constellation",
-            "fieldType": "text",
-            "comparator": "=",
-            "fieldValue": "cepheus",
-            "isList": false
-        },
-        {
-            "fieldName": "type", // the stellar type
-            "fieldType": "text",
-            "comparator": "IN",
-            "fieldValue": ["hypergiant","supergiant","main-sequence star"],
-            "isList": true
-        },
-        {
-            "fieldName": "mass",
-            "fieldType": "float",
-            "comparator": ">=",
-            "fieldValue": "1.5",
-            "fieldUnit": "M☉"
-        },
-        {
-            "comparator": ">",
-            "fieldName": "distance",
-            "fieldType": "integer",
-            "fieldUnit": "pc",
-            "fieldValue": "50"
-        }
+                "fieldName": "constellation",
+                "fieldType": "text",
+                "comparator": "=",
+                "fieldValue": "cepheus",
+                "isList": false
+            },
+            {
+                "fieldName": "type", // the stellar type
+                "fieldType": "text",
+                "comparator": "IN",
+                "fieldValue": ["hypergiant", "supergiant", "main-sequence star"],
+                "isList": true
+            },
+            {
+                "fieldName": "mass",
+                "fieldType": "float",
+                "comparator": ">=",
+                "fieldValue": "1.5",
+                "fieldUnit": "M☉"
+            },
+            {
+                "comparator": ">",
+                "fieldName": "distance",
+                "fieldType": "integer",
+                "fieldUnit": "pc",
+                "fieldValue": "50"
+            }
         ]
     };
 
     let nestedParamsObj = {
-        "dataType":1,
+        "dataType": 1,
         "model": "Subject",
-        "content":[{
-            "fieldName":"Diagnosis Age",
-            "fieldType":"integer",
-            "isList":false,
-            "comparator":"<=",
-            "fieldValue":"365",
-            "fieldUnit":"days"
-        },{
-            "fieldName":"Overall Status",
-            "fieldType":"text",
-            "isList":true,
-            "comparator":"IN",
-            "fieldValue":["Diseased"]
-        },{
-            "dataType":2,
-            "model":"Sample",
-            "content":[{
-                "fieldName":"Diagnosis",
-                "fieldType":"text",
-                "isList":true,
-                "comparator":"IN",
-                "fieldValue":["Neuroblastoma"]
-            },{
-                "dataType":6,
-                "model":"Sample",
-                "content":[{
-                    "fieldName":"quantity",
-                    "fieldType":"float",
-                    "isList":false,
-                    "comparator":">=",
-                    "fieldValue":"1.0",
-                    "fieldUnit":"μl"
-                },{
-                    "dataType":3,
-                    "model":"Data",
-                    "content":[{
-                        "fieldName":"Overall Result",
-                        "fieldType":"text",
-                        "isList":true,
-                        "comparator":"IN",
-                        "fieldValue":["SCA","NCA"]
+        "content": [{
+            "fieldName": "Diagnosis Age",
+            "fieldType": "integer",
+            "isList": false,
+            "comparator": "<=",
+            "fieldValue": "365",
+            "fieldUnit": "days"
+        }, {
+            "fieldName": "Overall Status",
+            "fieldType": "text",
+            "isList": true,
+            "comparator": "IN",
+            "fieldValue": ["Diseased"]
+        }, {
+            "dataType": 2,
+            "model": "Sample",
+            "content": [{
+                "fieldName": "Diagnosis",
+                "fieldType": "text",
+                "isList": true,
+                "comparator": "IN",
+                "fieldValue": ["Neuroblastoma"]
+            }, {
+                "dataType": 6,
+                "model": "Sample",
+                "content": [{
+                    "fieldName": "quantity",
+                    "fieldType": "float",
+                    "isList": false,
+                    "comparator": ">=",
+                    "fieldValue": "1.0",
+                    "fieldUnit": "μl"
+                }, {
+                    "dataType": 3,
+                    "model": "Data",
+                    "content": [{
+                        "fieldName": "Overall Result",
+                        "fieldType": "text",
+                        "isList": true,
+                        "comparator": "IN",
+                        "fieldValue": ["SCA", "NCA"]
                     }]
                 }]
-            },{
-                "dataType":7,
-                "model":"Sample",
-                "content":[{
-                    "fieldName":"quantity",
-                    "fieldType":"float",
-                    "isList":false,
-                    "comparator":">=",
-                    "fieldValue":"1.2",
-                    "fieldUnit":"µg"
-                },{
-                    "dataType":8,
-                    "model":"Data",
-                    "content":[{
-                        "fieldName":"hypoxia signature",
-                        "fieldType":"text",
-                        "isList":true,
-                        "comparator":"IN",
-                        "fieldValue":["high"]
+            }, {
+                "dataType": 7,
+                "model": "Sample",
+                "content": [{
+                    "fieldName": "quantity",
+                    "fieldType": "float",
+                    "isList": false,
+                    "comparator": ">=",
+                    "fieldValue": "1.2",
+                    "fieldUnit": "µg"
+                }, {
+                    "dataType": 8,
+                    "model": "Data",
+                    "content": [{
+                        "fieldName": "hypoxia signature",
+                        "fieldType": "text",
+                        "isList": true,
+                        "comparator": "IN",
+                        "fieldValue": ["high"]
                     }]
                 }]
             }]
@@ -131,67 +130,67 @@ describe("PgJSONQueryStrategy", function() {
     };
 
     let subjectParamsObj = {
-        "dataType":1,
-        "model":"Subject",
+        "dataType": 1,
+        "model": "Subject",
         "content": [
             {
-            "personalDetails":true,
-            "surnameComparator":"LIKE",
-            "surname":"Pizzi",
-            "givenNameComparator":"NOT LIKE",
-            "givenName":"Pippo",
-            "birthDateComparator":"="
-        },{
-            "specializedQuery":"Subject",
-            "codeComparator":"LIKE",
-            "code":"PAT002"
-        },{
-            "specializedQuery":"Subject",
-            "sexComparator":"IN",
-            "sex":["F","M"]
-        },{
-            "fieldName":"overall_status",
-            "fieldType":"text",
-            "isList":true,
-            "comparator":"IN",
-            "fieldValue":["Diseased","Deceased"]
-        },{
-            "dataType":2,
-            "model":"Sample",
-            "content":[
-                {
-                "specializedQuery":"Sample",
-                "biobankCodeComparator":"LIKE",
-                "biobankCode":"SAMPOO1"
-            },{
-                "fieldName":"Diagnosis",
-                "fieldType":"text",
-                "isList":true,
-                "comparator":"IN",
-                "fieldValue":["Neuroblastoma"]
-            }]
-        }
+                "personalDetails": true,
+                "surnameComparator": "LIKE",
+                "surname": "Pizzi",
+                "givenNameComparator": "NOT LIKE",
+                "givenName": "Pippo",
+                "birthDateComparator": "="
+            }, {
+                "specializedQuery": "Subject",
+                "codeComparator": "LIKE",
+                "code": "PAT002"
+            }, {
+                "specializedQuery": "Subject",
+                "sexComparator": "IN",
+                "sex": ["F", "M"]
+            }, {
+                "fieldName": "overall_status",
+                "fieldType": "text",
+                "isList": true,
+                "comparator": "IN",
+                "fieldValue": ["Diseased", "Deceased"]
+            }, {
+                "dataType": 2,
+                "model": "Sample",
+                "content": [
+                    {
+                        "specializedQuery": "Sample",
+                        "biobankCodeComparator": "LIKE",
+                        "biobankCode": "SAMPOO1"
+                    }, {
+                        "fieldName": "Diagnosis",
+                        "fieldType": "text",
+                        "isList": true,
+                        "comparator": "IN",
+                        "fieldValue": ["Neuroblastoma"]
+                    }]
+            }
         ]
     };
 
-    before(function() {
+    before(function () {
         this.strategy = new PgJSONQueryStrategy();
     });
 
-    describe("#getSubqueryRow", function() {
-        it("#should throw an error if a comparator is not allowed (SQL injection)", function() {
+    describe("#getSubqueryRow", function () {
+        it("#should throw an error if a comparator is not allowed (SQL injection)", function () {
             expect(this.strategy.getSubqueryRow.bind(this.strategy.getSubqueryRow, criteriaRowWithSQLInjection)).to.throw(
                 "Operation not allowed. Trying to inject a forbidden comparator!!"
             );
         });
     });
 
-    describe("#composeSpecializedPersonalDetailsQuery", function() {
-        it("composes a query from a criteria object containing specialized fields on subject and personal details", function() {
+    describe("#composeSpecializedPersonalDetailsQuery", function () {
+        it("composes a query from a criteria object containing specialized fields on subject and personal details", function () {
             let pdProperties = subjectParamsObj.content[0];
             let parameteredQuery = this.strategy.composeSpecializedPersonalDetailsQuery(pdProperties);
             let selectStatement = "SELECT id, given_name, surname, birth_date FROM personal_details";
-            let subquery = "pd.surname "+pdProperties.surnameComparator+" $1 AND pd.given_name "+pdProperties.givenNameComparator+" $2";
+            let subquery = "pd.surname " + pdProperties.surnameComparator + " $1 AND pd.given_name " + pdProperties.givenNameComparator + " $2";
             let parameters = [pdProperties.surname.toUpperCase(), pdProperties.givenName.toUpperCase()];
             expect(parameteredQuery).to.have.property('select');
             expect(parameteredQuery).to.have.property('where');
@@ -202,8 +201,8 @@ describe("PgJSONQueryStrategy", function() {
         });
     });
 
-    describe("#composeSpecializedQuery", function() {
-        it("composes a query from a criteria object containing specialized fields on subject (code)", function() {
+    describe("#composeSpecializedQuery", function () {
+        it("composes a query from a criteria object containing specialized fields on subject (code)", function () {
             let subjProperties = subjectParamsObj.content[1];
             let parameteredQuery = this.strategy.composeSpecializedQuery(subjProperties, {}, "d.");
             let subquery = "d.code LIKE $1";
@@ -212,18 +211,16 @@ describe("PgJSONQueryStrategy", function() {
             // TODO add parameters check into the array
         });
 
-        it("composes a query from a criteria object containing specialized fields on subject (sex)", function() {
+        it("composes a query from a criteria object containing specialized fields on subject (sex)", function () {
             let subjSex = subjectParamsObj.content[2];
-            let parameteredQuery = this.strategy.composeSpecializedQuery(subjSex, { parameters: [subjectParamsObj.dataType]}, "d.");
+            let parameteredQuery = this.strategy.composeSpecializedQuery(subjSex, { parameters: [subjectParamsObj.dataType] }, "d.");
             let subquery = "d.sex IN ($2,$3)";
             expect(parameteredQuery.parameters).to.eql(_.flatten([subjectParamsObj.dataType, subjectParamsObj.content[2].sex]));
         });
-
     });
 
-    describe("#composeSingle", function() {
-
-        it("composes a query from a criteria object containing only nonrecursive fields", function() {
+    describe("#composeSingle", function () {
+        it("composes a query from a criteria object containing only nonrecursive fields", function () {
             let parameteredQuery = this.strategy.composeSingle(criteriaObj);
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
@@ -247,16 +244,16 @@ describe("PgJSONQueryStrategy", function() {
             expect(parameteredQuery.previousOutput.lastPosition).to.equal(13);
         });
 
-        it("composes a query from a criteria object containing specialized fields on subject and personal details", function() {
+        it("composes a query from a criteria object containing specialized fields on subject and personal details", function () {
             let commonTableExpr = [
                 "SELECT id, given_name, surname, birth_date FROM personal_details pd WHERE pd.surname NOT LIKE "
             ];
         });
 
-        it("composes a set of queries from a nested criteria object", function() {
+        it("composes a set of queries from a nested criteria object", function () {
             let commonTableExpressions = [
                 "SELECT id, parent_subject, parent_sample, parent_data FROM data ",
-                "WHERE type = $14 AND (((metadata->$15->>'value')::text IN ($16,$17)))", //CGH
+                "WHERE type = $14 AND (((metadata->$15->>'value')::text IN ($16,$17)))", // CGH
 
                 "SELECT id, biobank_code, parent_subject, parent_sample FROM sample ",
                 "WHERE type = $10 AND (((metadata->$11->>'value')::float >= $12 AND (metadata->$11->>'unit')::text LIKE $13))",
@@ -276,7 +273,7 @@ describe("PgJSONQueryStrategy", function() {
             let parameters = [ nestedParamsObj.dataType,
                 nestedParamsObj.content[0].fieldName, nestedParamsObj.content[0].fieldValue, nestedParamsObj.content[0].fieldUnit, // Subject
                 nestedParamsObj.content[1].fieldName, nestedParamsObj.content[1].fieldValue[0],
-                nestedParamsObj.content[2].dataType, nestedParamsObj.content[2].content[0].fieldName, //Tissue
+                nestedParamsObj.content[2].dataType, nestedParamsObj.content[2].content[0].fieldName, // Tissue
                 nestedParamsObj.content[2].content[0].fieldValue[0],
                 nestedParamsObj.content[2].content[1].dataType, nestedParamsObj.content[2].content[1].content[0].fieldName, // DNA Sample
                 nestedParamsObj.content[2].content[1].content[0].fieldValue, nestedParamsObj.content[2].content[1].content[0].fieldUnit,
@@ -297,14 +294,14 @@ describe("PgJSONQueryStrategy", function() {
             console.log(nestedParameteredQuery.parameters);
             expect(nestedParameteredQuery.select).to.equal(selectStatement);
             expect(nestedParameteredQuery.where).to.equal(whereClause);
-            // expect(_.pluck(nestedParameteredQuery.commonTableExpressions, 'statement')).to.eql(commonTableExpressions);
+            // expect(_.map(nestedParameteredQuery.commonTableExpressions, 'statement')).to.eql(commonTableExpressions);
             expect(nestedParameteredQuery.previousOutput.parameters).to.eql(parameters);
             expect(nestedParameteredQuery.previousOutput.lastPosition).to.equal(parameters.length);
         });
     });
 
-    describe("#compose", function() {
-        it("composes a query from a nested criteria object (containing only nonrecursive fields)", function() {
+    describe("#compose", function () {
+        it("composes a query from a nested criteria object (containing only nonrecursive fields)", function () {
             let query = this.strategy.compose(nestedParamsObj);
 
             let commonTableExpr = [
@@ -341,7 +338,7 @@ describe("PgJSONQueryStrategy", function() {
             expect(query.statement).to.equal(commonTableExpr + " " + mainQuery);
         });
 
-        it("composes a query from a nested subject criteria object (containing specialized fields only)", function() {
+        it("composes a query from a nested subject criteria object (containing specialized fields only)", function () {
             let query = this.strategy.compose(subjectParamsObj);
 
             let commonTableExpr = [
@@ -369,9 +366,8 @@ describe("PgJSONQueryStrategy", function() {
             expect(query.parameters[2]).to.equal(subjectParamsObj.content[0].givenName.toUpperCase());
         });
 
-        it("composes a query from a nested subject criteria object (containing specialized fields only)", function() {
-
-            let query = this.strategy.compose(_.assign({wantsPersonalInfo: true}, _.cloneDeep(subjectParamsObj)));
+        it("composes a query from a nested subject criteria object (containing specialized fields only)", function () {
+            let query = this.strategy.compose(_.assign({ wantsPersonalInfo: true }, _.cloneDeep(subjectParamsObj)));
             let commonTableExpr = [
                 "WITH pd AS (SELECT id, given_name, surname, birth_date FROM personal_details), ",
                 "nested_1 AS (SELECT id, biobank_code FROM sample ",
@@ -390,50 +386,46 @@ describe("PgJSONQueryStrategy", function() {
             expect(query.statement).to.equal(commonTableExpr + " " + mainQuery);
             console.log(query.parameters);
             expect(query.parameters).to.have.length(13);
-
         });
-
     });
-
 });
 
 /**
  *
  */
-describe("PgJSONBQueryStrategy", function() {
-
+describe("PgJSONBQueryStrategy", function () {
     let criteriaObj = {
         "dataType": 1,
         "model": "Data",
         "content": [
             {
-            "fieldName": "constellation",
-            "fieldType": "text",
-            "comparator": "=",
-            "fieldValue": "cepheus",
-            "isList": false
-        },
-        {
-            "fieldName": "type", // the stellar type
-            "fieldType": "text",
-            "comparator": "IN",
-            "fieldValue": ["hypergiant","supergiant","main-sequence star"],
-            "isList": true
-        },
-        {
-            "fieldName": "mass",
-            "fieldType": "float",
-            "comparator": ">=",
-            "fieldValue": "1.5",
-            "fieldUnit": ["M☉"]
-        },
-        {
-            "comparator": ">",
-            "fieldName": "distance",
-            "fieldType": "integer",
-            "fieldUnit": ["pc"],
-            "fieldValue": "50"
-        }
+                "fieldName": "constellation",
+                "fieldType": "text",
+                "comparator": "=",
+                "fieldValue": "cepheus",
+                "isList": false
+            },
+            {
+                "fieldName": "type", // the stellar type
+                "fieldType": "text",
+                "comparator": "IN",
+                "fieldValue": ["hypergiant", "supergiant", "main-sequence star"],
+                "isList": true
+            },
+            {
+                "fieldName": "mass",
+                "fieldType": "float",
+                "comparator": ">=",
+                "fieldValue": "1.5",
+                "fieldUnit": ["M☉"]
+            },
+            {
+                "comparator": ">",
+                "fieldName": "distance",
+                "fieldType": "integer",
+                "fieldUnit": ["pc"],
+                "fieldValue": "50"
+            }
         ]
     };
 
@@ -446,7 +438,7 @@ describe("PgJSONBQueryStrategy", function() {
             "fieldType": "text",
             "fieldValue": "Aldebaran",
             "isList": false
-        },{
+        }, {
             "comparator": "ILIKE",
             "fieldName": "constellation",
             "fieldType": "text",
@@ -464,7 +456,7 @@ describe("PgJSONBQueryStrategy", function() {
             "fieldType": "text",
             "fieldValue": "Ald%",
             "isList": false
-        },{
+        }, {
             "comparator": "NOT ILIKE",
             "fieldName": "constellation",
             "fieldType": "text",
@@ -510,18 +502,18 @@ describe("PgJSONBQueryStrategy", function() {
         "model": "Data",
         "content": [
             {
-            "comparator": "=",
-            "fieldName": "is_neutron_star",
-            "fieldType": "boolean",
-            "fieldValue": true,
-            "isList": false
-        },
-        {
-            "comparator": "=",
-            "fieldName": "is_black_hole",
-            "fieldType": "boolean",
-            "fieldValue": false
-        }
+                "comparator": "=",
+                "fieldName": "is_neutron_star",
+                "fieldType": "boolean",
+                "fieldValue": true,
+                "isList": false
+            },
+            {
+                "comparator": "=",
+                "fieldName": "is_black_hole",
+                "fieldType": "boolean",
+                "fieldValue": false
+            }
         ]
     };
 
@@ -530,18 +522,18 @@ describe("PgJSONBQueryStrategy", function() {
         "model": "Data",
         "content": [
             {
-            "comparator": "=",
-            "fieldName": "is_neutron_star",
-            "fieldType": "boolean",
-            "fieldValue": "true",
-            "isList": false
-        },
-        {
-            "comparator": "=",
-            "fieldName": "is_black_hole",
-            "fieldType": "boolean",
-            "fieldValue": "false"
-        }
+                "comparator": "=",
+                "fieldName": "is_neutron_star",
+                "fieldType": "boolean",
+                "fieldValue": "true",
+                "isList": false
+            },
+            {
+                "comparator": "=",
+                "fieldName": "is_black_hole",
+                "fieldType": "boolean",
+                "fieldValue": "false"
+            }
         ]
     };
 
@@ -549,12 +541,12 @@ describe("PgJSONBQueryStrategy", function() {
         "dataType": 7,
         "content": [
             {
-            "comparator": "=",
-            "fieldName": "gene_name",
-            "fieldType": "text",
-            "fieldValue": "Corf44",
-            "isInLoop": true
-        }
+                "comparator": "=",
+                "fieldName": "gene_name",
+                "fieldType": "text",
+                "fieldValue": "Corf44",
+                "isInLoop": true
+            }
         ]
     };
 
@@ -562,12 +554,12 @@ describe("PgJSONBQueryStrategy", function() {
         "dataType": 7,
         "content": [
             {
-            "comparator": "ILIKE",
-            "fieldName": "gene_name",
-            "fieldType": "text",
-            "fieldValue": "CORF%",
-            "isInLoop": true
-        }
+                "comparator": "ILIKE",
+                "fieldName": "gene_name",
+                "fieldType": "text",
+                "fieldValue": "CORF%",
+                "isInLoop": true
+            }
         ]
     };
 
@@ -575,89 +567,84 @@ describe("PgJSONBQueryStrategy", function() {
         "dataType": 7,
         "content": [
             {
-            "comparator": "?&",
-            "fieldName": "gene_name",
-            "fieldType": "text",
-            "fieldValue": ["MYCN","ALK","CD44","SOX4", "Corf44"],
-            "isList": true,
-            "isInLoop": true
-        }
+                "comparator": "?&",
+                "fieldName": "gene_name",
+                "fieldType": "text",
+                "fieldValue": ["MYCN", "ALK", "CD44", "SOX4", "Corf44"],
+                "isList": true,
+                "isInLoop": true
+            }
         ]
     };
 
-    let sampleParamsObj = {"dataType":4,"model":"Sample","wantsSubject":true,"wantsPersonalInfo":true,"content":[{"specializedQuery":"Sample","biobank":1, "biobankComparator":"="},{"fieldName":"quantity","fieldType":"float","isList":false,"comparator":">=","fieldValue":"1.0","fieldUnit":["μg"]},{"dataType":6,"model":"Data","content":[{"fieldName":"platform","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["Agilent"]},{"fieldName":"array","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["4x180K"]},{"dataType":7,"model":"Data","content":[{"fieldName":"genome","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["hg19"]},{"dataType":8,"model":"Data","content":[{"fieldName":"chr","fieldType":"text","isList":true,"comparator":"IN","fieldValue":["chr11","chr17"]},{"fieldName":"is_amplification","fieldType":"boolean","isList":false,"comparator":"=","fieldValue":"true"}]}]}]}]};
+    let sampleParamsObj = { "dataType": 4, "model": "Sample", "wantsSubject": true, "wantsPersonalInfo": true, "content": [{ "specializedQuery": "Sample", "biobank": 1, "biobankComparator": "=" }, { "fieldName": "quantity", "fieldType": "float", "isList": false, "comparator": ">=", "fieldValue": "1.0", "fieldUnit": ["μg"] }, { "dataType": 6, "model": "Data", "content": [{ "fieldName": "platform", "fieldType": "text", "isList": true, "comparator": "IN", "fieldValue": ["Agilent"] }, { "fieldName": "array", "fieldType": "text", "isList": true, "comparator": "IN", "fieldValue": ["4x180K"] }, { "dataType": 7, "model": "Data", "content": [{ "fieldName": "genome", "fieldType": "text", "isList": true, "comparator": "IN", "fieldValue": ["hg19"] }, { "dataType": 8, "model": "Data", "content": [{ "fieldName": "chr", "fieldType": "text", "isList": true, "comparator": "IN", "fieldValue": ["chr11", "chr17"] }, { "fieldName": "is_amplification", "fieldType": "boolean", "isList": false, "comparator": "=", "fieldValue": "true" }] }] }] }] };
 
     let emptySampleObj = {
         "dataType": 2,
         "model": "Sample",
         "content": [
-            {"specializedQuery": "Sample"},
+            { "specializedQuery": "Sample" },
             {}
         ]
     };
 
-    before(function() {
+    before(function () {
         this.strategy = new PgJSONBQueryStrategy();
     });
 
-    describe("#getSubqueryRow", function() {
-
-        it("should return a clause with a containment operator", function() {
+    describe("#getSubqueryRow", function () {
+        it("should return a clause with a containment operator", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRow(criteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("d.metadata @> $"+ (i+1));
+            expect(res.subquery).to.equal("d.metadata @> $" + (i + 1));
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql(['{\"constellation\":{\"value\":\"cepheus\"}}']);
         });
-
     });
 
-    describe("#getSubqueryRowAttribute", function() {
-
-        it("should return a clause with a containment operator", function() {
+    describe("#getSubqueryRowAttribute", function () {
+        it("should return a clause with a containment operator", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowAttribute(criteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("d.metadata @> $"+ (i+1));
+            expect(res.subquery).to.equal("d.metadata @> $" + (i + 1));
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql(['{\"constellation\":{\"value\":\"cepheus\"}}']);
         });
 
-        it("should return a containment (@>) clause with uppercase metadata value (case insensitive search)", function() {
+        it("should return a containment (@>) clause with uppercase metadata value (case insensitive search)", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowAttribute(caseInsensitiveCriteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("d.metadata @> $"+ (i+1));
+            expect(res.subquery).to.equal("d.metadata @> $" + (i + 1));
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql(['{\"name\":{\"value\":\"ALDEBARAN\"}}']);
         });
 
-        it("should return a containment (@>) clause with integer metadata value", function() {
+        it("should return a containment (@>) clause with integer metadata value", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowAttribute(numericCriteriaObj.content[1], previousOutput, 'd.');
             expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND (d.metadata->'temperature'->>'unit')::text IN ($" + (++i) + ')');
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql(['{\"temperature\":{\"value\":7500}}', 'K']);
         });
 
-        it("should return a containment (@>) clause with floating point metadata value", function() {
+        it("should return a containment (@>) clause with floating point metadata value", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowAttribute(numericCriteriaObj.content[0], previousOutput, 'd.');
             expect(res.subquery).to.equal("d.metadata @> $" + (++i) + " AND (d.metadata->'distance'->>'unit')::text IN ($" + (++i) + ')');
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql(['{\"distance\":{\"value\":8.25}}', 'pc']);
         });
-
     });
 
-    describe("#getSubqueryRowLoop", function() {
-
-        it("should return a clause with the element exists [?] jsonb operator", function() {
+    describe("#getSubqueryRowLoop", function () {
+        it("should return a clause with the element exists [?] jsonb operator", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowLoop(loopCriteriaObj.content[0], previousOutput, 'd.');
             /*
                expect(res.subquery).to.equal("(d.metadata->$"+(++i)+"->'values' ? $"+(++i)+")");
@@ -669,10 +656,10 @@ describe("PgJSONBQueryStrategy", function() {
             expect(res.previousOutput.parameters).to.eql(['{\"gene_name\":{\"values\":[\"Corf44\"]}}']);
         });
 
-        it("should return a clause with the element exists [?] jsonb operator with case insensitive values", function() {
+        it("should return a clause with the element exists [?] jsonb operator with case insensitive values", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
-            let caseInsensitiveLoopRow = _.extend(_.clone(loopCriteriaObj.content[0]), {caseInsensitive: true});
+            let previousOutput = { lastPosition: i, parameters: [] };
+            let caseInsensitiveLoopRow = _.extend(_.clone(loopCriteriaObj.content[0]), { caseInsensitive: true });
             let res = this.strategy.getSubqueryRowLoop(caseInsensitiveLoopRow, previousOutput, 'd.');
             /*
                expect(res.subquery).to.equal("(d.metadata->$"+(++i)+"->'values' ? $"+(++i)+")");
@@ -684,10 +671,9 @@ describe("PgJSONBQueryStrategy", function() {
             expect(res.previousOutput.parameters).to.eql(['{\"gene_name\":{\"values\":[\"CORF44\"]}}']);
         });
 
-
-        it("should return a clause with the element exists [?] jsonb operator with NOT condition", function() {
+        it("should return a clause with the element exists [?] jsonb operator with NOT condition", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             loopCriteriaObj.content[0].comparator = '<>';
             let res = this.strategy.getSubqueryRowLoop(loopCriteriaObj.content[0], previousOutput, 'd.');
             expect(res.subquery).to.equal("NOT d.metadata @> $" + (++i));
@@ -700,9 +686,9 @@ describe("PgJSONBQueryStrategy", function() {
                */
         });
 
-        it("should return a clause with the element exists all [?&] jsonb operator", function() {
+        it("should return a clause with the element exists all [?&] jsonb operator", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowLoop(loopListCriteriaObj.content[0], previousOutput, 'd.');
             expect(res.subquery).to.equal("d.metadata @> $" + (++i));
             expect(res.previousOutput).to.have.property("parameters");
@@ -714,10 +700,10 @@ describe("PgJSONBQueryStrategy", function() {
                */
         });
 
-        it("should return a clause with the element exists all [?&] jsonb operator (case insensitive)", function() {
+        it("should return a clause with the element exists all [?&] jsonb operator (case insensitive)", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
-            let caseInsensitiveLoopListRow = _.extend(_.cloneDeep(loopListCriteriaObj.content[0]), {caseInsensitive: true});
+            let previousOutput = { lastPosition: i, parameters: [] };
+            let caseInsensitiveLoopListRow = _.extend(_.cloneDeep(loopListCriteriaObj.content[0]), { caseInsensitive: true });
             let values = _.map(loopListCriteriaObj.content[0].fieldValue, el => el.toUpperCase());
             let res = this.strategy.getSubqueryRowLoop(caseInsensitiveLoopListRow, previousOutput, 'd.');
             expect(res.subquery).to.equal("d.metadata @> $" + (++i));
@@ -729,32 +715,30 @@ describe("PgJSONBQueryStrategy", function() {
                expect(res.previousOutput.parameters).to.eql([loopListCriteriaObj.content[0].fieldName, values]); */
         });
 
-        it("should return a clause with the element exists any [?|] jsonb operator", function() {
+        it("should return a clause with the element exists any [?|] jsonb operator", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             loopListCriteriaObj.content[0].comparator = '?|';
             let res = this.strategy.getSubqueryRowLoop(loopListCriteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("(d.metadata->$"+(++i)+"->'values' ?| $"+(++i)+")");
+            expect(res.subquery).to.equal("(d.metadata->$" + (++i) + "->'values' ?| $" + (++i) + ")");
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql([loopListCriteriaObj.content[0].fieldName, loopListCriteriaObj.content[0].fieldValue]);
         });
 
         /* TODO LIKE/ILIKE search on loops (use json_array_elements?) */
-        it("should return a clause with a pattern matching search", function() {
+        it("should return a clause with a pattern matching search", function () {
             let i = 1;
-            let previousOutput = {lastPosition: i, parameters: []};
+            let previousOutput = { lastPosition: i, parameters: [] };
             let res = this.strategy.getSubqueryRowLoop(loopPatternMatchingCriteriaObj.content[0], previousOutput, 'd.');
-            expect(res.subquery).to.equal("EXISTS (SELECT 1 FROM jsonb_array_elements_text(d.metadata->$"+(++i)+"->'values') WHERE value ILIKE $"+(++i)+")");
+            expect(res.subquery).to.equal("EXISTS (SELECT 1 FROM jsonb_array_elements_text(d.metadata->$" + (++i) + "->'values') WHERE value ILIKE $" + (++i) + ")");
             expect(res.previousOutput).to.have.property("parameters");
             expect(res.previousOutput.parameters).to.eql([loopPatternMatchingCriteriaObj.content[0].fieldName,
                 loopPatternMatchingCriteriaObj.content[0].fieldValue]);
         });
-
     });
 
-    describe("#composeSingle", function() {
-
-        it("compose a query from criteria with positive matching and range conditions on nonrecursive fields", function() {
+    describe("#composeSingle", function () {
+        it("compose a query from criteria with positive matching and range conditions on nonrecursive fields", function () {
             let parameteredQuery = this.strategy.composeSingle(criteriaObj);
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
@@ -774,10 +758,9 @@ describe("PgJSONBQueryStrategy", function() {
             expect(parameteredQuery.select).to.equal(selectStatement);
             expect(parameteredQuery.where).to.equal(whereClause);
             expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
         });
 
-        it("compose a query from criteria with positive string pattern matching (LIKE/Insensitive LIKE)", function() {
+        it("compose a query from criteria with positive string pattern matching (LIKE/Insensitive LIKE)", function () {
             let parameteredQuery = this.strategy.composeSingle(comparisonCriteriaObj);
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
@@ -794,10 +777,9 @@ describe("PgJSONBQueryStrategy", function() {
             expect(parameteredQuery.select).to.equal(selectStatement);
             expect(parameteredQuery.where).to.equal(whereClause);
             expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
         });
 
-        it("compose a query from criteria with negative string pattern matching (NOT LIKE/NOT Insensitive LIKE)", function() {
+        it("compose a query from criteria with negative string pattern matching (NOT LIKE/NOT Insensitive LIKE)", function () {
             let parameteredQuery = this.strategy.composeSingle(negativeComparisonCriteriaObj);
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (" +
@@ -814,11 +796,9 @@ describe("PgJSONBQueryStrategy", function() {
             expect(parameteredQuery.select).to.equal(selectStatement);
             expect(parameteredQuery.where).to.equal(whereClause);
             expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
         });
 
-        it("compose a query from criteria with exclusion matching and range conditions on nonrecursive fields", function() {
-
+        it("compose a query from criteria with exclusion matching and range conditions on nonrecursive fields", function () {
             criteriaObj.content[0].comparator = "<>";
             criteriaObj.content[1].comparator = "NOT IN";
             let selectStatement = "SELECT id FROM data d";
@@ -839,43 +819,37 @@ describe("PgJSONBQueryStrategy", function() {
             expect(parameteredQuery.select).to.equal(selectStatement);
             expect(parameteredQuery.where).to.equal(whereClause);
             expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
         });
 
-        it("compose a query with two boolean fields (from string)", function() {
-
+        it("compose a query with two boolean fields (from string)", function () {
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND ((d.metadata @> $2) AND (d.metadata @> $3))";
             let parameters = [booleanStringCriteriaObj.dataType,
                 '{\"is_neutron_star\":{\"value\":true}}', '{\"is_black_hole\":{\"value\":false}}'];
-                let parameteredQuery = this.strategy.composeSingle(booleanStringCriteriaObj);
-                expect(parameteredQuery).to.have.property('select');
-                expect(parameteredQuery).to.have.property('where');
-                expect(parameteredQuery).to.have.property('previousOutput');
-                expect(parameteredQuery.select).to.equal(selectStatement);
-                expect(parameteredQuery.where).to.equal(whereClause);
-                expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
+            let parameteredQuery = this.strategy.composeSingle(booleanStringCriteriaObj);
+            expect(parameteredQuery).to.have.property('select');
+            expect(parameteredQuery).to.have.property('where');
+            expect(parameteredQuery).to.have.property('previousOutput');
+            expect(parameteredQuery.select).to.equal(selectStatement);
+            expect(parameteredQuery.where).to.equal(whereClause);
+            expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
         });
 
-        it("compose a query with two boolean fields (from boolean)", function() {
-
+        it("compose a query with two boolean fields (from boolean)", function () {
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND ((d.metadata @> $2) AND (d.metadata @> $3))";
             let parameters = [booleanCriteriaObj.dataType,
                 '{\"is_neutron_star\":{\"value\":true}}', '{\"is_black_hole\":{\"value\":false}}'];
-                let parameteredQuery = this.strategy.composeSingle(booleanCriteriaObj);
-                expect(parameteredQuery).to.have.property('select');
-                expect(parameteredQuery).to.have.property('where');
-                expect(parameteredQuery).to.have.property('previousOutput');
-                expect(parameteredQuery.select).to.equal(selectStatement);
-                expect(parameteredQuery.where).to.equal(whereClause);
-                expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
+            let parameteredQuery = this.strategy.composeSingle(booleanCriteriaObj);
+            expect(parameteredQuery).to.have.property('select');
+            expect(parameteredQuery).to.have.property('where');
+            expect(parameteredQuery).to.have.property('previousOutput');
+            expect(parameteredQuery.select).to.equal(selectStatement);
+            expect(parameteredQuery.where).to.equal(whereClause);
+            expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
         });
 
-        it("compose a query with a loop array condition", function() {
-
+        it("compose a query with a loop array condition", function () {
             let selectStatement = "SELECT id FROM data d";
             let whereClause = "WHERE d.type = $1 AND (((d.metadata->$2->'values' " + loopListCriteriaObj.content[0].comparator + " $3)))";
             let parameters = [loopListCriteriaObj.dataType, loopListCriteriaObj.content[0].fieldName, loopListCriteriaObj.content[0].fieldValue];
@@ -886,7 +860,6 @@ describe("PgJSONBQueryStrategy", function() {
             expect(parameteredQuery.select).to.equal(selectStatement);
             expect(parameteredQuery.where).to.equal(whereClause);
             expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
-
         });
 
         /*
@@ -906,12 +879,10 @@ describe("PgJSONBQueryStrategy", function() {
            expect(parameteredQuery.previousOutput.parameters).to.eql(parameters);
 
            }); */
-
     });
 
-    describe("#compose", function() {
-
-        it("composes a query from a nested sample criteria object", function() {
+    describe("#compose", function () {
+        it("composes a query from a nested sample criteria object", function () {
             let query = this.strategy.compose(sampleParamsObj);
             let commonTableExpr = [
                 "WITH s AS (SELECT id, code, sex, personal_info FROM subject), ",
@@ -942,16 +913,14 @@ describe("PgJSONBQueryStrategy", function() {
             expect(query.parameters).to.have.length(14);
         });
 
-        it("composes a query from an empty sample criteria (containing an empty specialized criteria)", function() {
+        it("composes a query from an empty sample criteria (containing an empty specialized criteria)", function () {
             let query = this.strategy.compose(emptySampleObj);
             let expectedStatement = ["WITH bb AS (SELECT id, biobank_id, acronym as biobank_acronym, name FROM biobank) ",
                 "SELECT DISTINCT d.biobank, d.biobank_code, bb.biobank_acronym, d.id, d.type, d.owner, d.metadata FROM sample d ",
                 "LEFT JOIN bb ON bb.id = d.biobank ",
                 "WHERE d.type = $1;"].join("");
-                expect(query.statement).to.equal(expectedStatement);
-                expect(query.parameters).to.eql([emptySampleObj.dataType]);
+            expect(query.statement).to.equal(expectedStatement);
+            expect(query.parameters).to.eql([emptySampleObj.dataType]);
         });
-
-});
-
+    });
 });
